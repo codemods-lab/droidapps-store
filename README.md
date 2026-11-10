@@ -12,6 +12,21 @@ app repo (private) ──tag v1.2.0──▶ release.yml ──signed APK──�
                                                           checks SHA-256 + signing cert, installs)
 ```
 
+## Why it exists
+
+These are personal apps that can't or shouldn't go on the Play Store: SpendLens reads SMS, ChatLens reads WhatsApp notifications, and AR YouTube bypasses YouTube's player. Sideloading APKs by hand meant no updates, no version tracking and mismatched debug keys. UtilDroid Store fixes that at zero cost: one signing key, CI-built releases, and an app on the phone that lists, installs and auto-updates everything.
+
+## Status (Nov 2026)
+
+| App | Repo | Package | Notes |
+| --- | --- | --- | --- |
+| UtilDroid Store | `utildroid-store` (public) | `com.innovcrest.utildroid` | v1.0.0 released; updates itself |
+| AR YouTube | `ar-youtube` (private) | `com.innovcrest.aryoutube` | phone + TV; TV copy is installed by hand |
+| SpendLens | `spendlens` (private) | `com.innovcrest.spendlens` | bank SMS spend tracker |
+| ChatLens | `chatlens` (private) | `com.innovcrest.chatlens` | WhatsApp insights |
+
+Each app's own README has a "Known gaps and ideas" section. Store-level ideas: a TV build of the store (catalog `platforms` already supports `tv`), app icons and screenshots in `catalog/apps/<id>/`, and a "beta" channel using GitHub pre-releases.
+
 ## What's in this repo
 
 | Path | What it is |
@@ -79,4 +94,9 @@ Push a new tag in the app's repo (`v1.1.0`). The version code comes from the tag
 ```bash
 ./gradlew assembleDebug        # app/build/outputs/apk/debug/app-debug.apk
 ```
-Needs JDK 17+ and the Android SDK (platform 35). A local release build is signed with the debug key unless `KEYSTORE_FILE` and the password env vars are set.
+Needs JDK 17+ and the Android SDK (platform 35). Release builds are only ever signed with the release key; without it they fail. To build one locally:
+```bash
+export KEYSTORE_FILE=~/keys/release.jks KEY_ALIAS=utildroid
+read -s KEYSTORE_PASSWORD && export KEYSTORE_PASSWORD KEY_PASSWORD=$KEYSTORE_PASSWORD
+./gradlew assembleRelease
+```

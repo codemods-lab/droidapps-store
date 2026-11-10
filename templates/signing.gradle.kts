@@ -21,11 +21,8 @@ android {
 
     buildTypes {
         release {
-            signingConfig = if (System.getenv("KEYSTORE_FILE") != null) {
-                signingConfigs.getByName("release")
-            } else {
-                signingConfigs.getByName("debug")
-            }
+            // Always the release key, never debug. Without KEYSTORE_FILE a release build fails.
+            signingConfig = signingConfigs.getByName("release")
         }
     }
 }

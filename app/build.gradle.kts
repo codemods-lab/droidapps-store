@@ -46,7 +46,8 @@ android {
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-            signingConfig = if (keystoreFile != null) signingConfigs.getByName("release") else signingConfigs.getByName("debug")
+            // Always the release key, never debug. Without KEYSTORE_FILE a release build fails.
+            signingConfig = signingConfigs.getByName("release")
         }
     }
 

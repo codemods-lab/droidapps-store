@@ -34,8 +34,6 @@ jobs:
           distribution: temurin
           java-version: "17"
 
-      - uses: android-actions/setup-android@v3
-
       - uses: gradle/actions/setup-gradle@v4
 
       - name: Version from tag (v1.2.3 -> name 1.2.3, code 10203)

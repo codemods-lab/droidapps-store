@@ -44,7 +44,7 @@ app repo ──tag v1.2.0──▶ release.yml ──signed APK──▶ GitHub 
 
    | Secret | Value |
    | --- | --- |
-   | `KEYSTORE_BASE64` | output of `base64 -w0 release.jks` |
+   | `KEYSTORE_BASE64` | output of `base64 -i release.jks` (macOS) or `base64 -w0 release.jks` (Linux) |
    | `KEYSTORE_PASSWORD` | keystore password |
    | `KEY_ALIAS` | `utildroid` |
    | `KEY_PASSWORD` | key password |

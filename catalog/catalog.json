@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-11-10T16:26:51Z",
+  "store": {
+    "name": "UtilDroid Store",
+    "signingCertSha256": ""
+  },
+  "apps": [
+    {
+      "id": "utildroid-store",
+      "name": "UtilDroid Store",
+      "packageName": "com.innovcrest.utildroid",
+      "summary": "This store, so it can update itself",
+      "description": "",
+      "category": "Tools",
+      "platforms": [
+        "phone"
+      ],
+      "repo": "codemods-lab/utildroid-store",
+      "iconUrl": "",
+      "screenshots": []
+    },
+    {
+      "id": "ar-youtube",
+      "name": "AR YouTube",
+      "packageName": "com.innovcrest.aryoutube",
+      "summary": "Ad-free YouTube with SponsorBlock",
+      "description": "Search and play, background and picture-in-picture playback, local subscriptions and SponsorBlock.",
+      "category": "Media",
+      "platforms": [
+        "phone",
+        "tv"
+      ],
+      "repo": "codemods-lab/ar-youtube",
+      "iconUrl": "",
+      "screenshots": []
+    },
+    {
+      "id": "spendlens",
+      "name": "SpendLens",
+      "packageName": "com.innovcrest.spendlens",
+      "summary": "Spends from bank SMS, fully on-device",
+      "description": "",
+      "category": "Finance",
+      "platforms": [
+        "phone"
+      ],
+      "repo": "codemods-lab/spendlens",
+      "iconUrl": "",
+      "screenshots": []
+    },
+    {
+      "id": "chatlens",
+      "name": "ChatLens",
+      "packageName": "com.innovcrest.chatlens",
+      "summary": "WhatsApp insights, fully on-device",
+      "description": "",
+      "category": "Tools",
+      "platforms": [
+        "phone"
+      ],
+      "repo": "codemods-lab/chatlens",
+      "iconUrl": "",
+      "screenshots": []
+    }
+  ]
+}

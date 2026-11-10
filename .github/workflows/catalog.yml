@@ -1,0 +1,51 @@
+# Rebuilds catalog/catalog.json from catalog/apps.yaml and each app's latest release.
+name: Build catalog
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "catalog/apps.yaml"
+      - "catalog/apps/**"
+      - "scripts/build_catalog.py"
+  repository_dispatch:
+    types: [app-released]
+  schedule:
+    - cron: "17 */6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: catalog
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - run: pip install pyyaml
+
+      - name: Build catalog.json
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python scripts/build_catalog.py
+
+      - name: Commit if changed
+        run: |
+          git config user.name "utildroid-bot"
+          git config user.email "utildroid-bot@users.noreply.github.com"
+          git add catalog/catalog.json
+          if git diff --cached --quiet; then
+            echo "Catalog unchanged"
+          else
+            git commit -m "catalog: update"
+            git push
+          fi

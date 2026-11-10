@@ -1,0 +1,50 @@
+# The list of apps UtilDroid Store shows. Add an app here and push; the
+# "Build catalog" workflow fills in versions, sizes and checksums from its releases.
+#
+# Per app:
+#   id           short slug; icon and screenshots live in catalog/apps/<id>/
+#   repo         owner/name of the app's public GitHub repo
+#   packageName  must match the APK's applicationId exactly
+#   platforms    [phone] or [phone, tv]; the store only lists apps that include phone
+
+store:
+  name: UtilDroid Store
+  # SHA-256 of your release signing certificate. Copy it from the store's
+  # Settings > About, or run:
+  #   keytool -list -v -keystore release.jks -alias utildroid | grep SHA256
+  # Leave empty until you have one; the signature check is skipped while empty.
+  signingCertSha256: ""
+
+apps:
+  - id: utildroid-store
+    repo: codemods-lab/utildroid-store
+    packageName: com.innovcrest.utildroid
+    name: UtilDroid Store
+    summary: This store, so it can update itself
+    category: Tools
+    platforms: [phone]
+
+  - id: ar-youtube
+    repo: codemods-lab/ar-youtube
+    packageName: com.innovcrest.aryoutube
+    name: AR YouTube
+    summary: Ad-free YouTube with SponsorBlock
+    description: Search and play, background and picture-in-picture playback, local subscriptions and SponsorBlock.
+    category: Media
+    platforms: [phone, tv]
+
+  - id: spendlens
+    repo: codemods-lab/spendlens
+    packageName: com.innovcrest.spendlens
+    name: SpendLens
+    summary: Spends from bank SMS, fully on-device
+    category: Finance
+    platforms: [phone]
+
+  - id: chatlens
+    repo: codemods-lab/chatlens
+    packageName: com.innovcrest.chatlens
+    name: ChatLens
+    summary: WhatsApp insights, fully on-device
+    category: Tools
+    platforms: [phone]

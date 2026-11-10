@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-11-10T16:26:51Z",
+  "generatedAt": "2026-11-10T18:04:50Z",
   "store": {
     "name": "UtilDroid Store",
-    "signingCertSha256": ""
+    "signingCertSha256": "933cb230c5355557e2d00d833f1cd2d9e669eae855a82f391a14f1bb0599d0d5"
   },
   "apps": [
     {
@@ -18,7 +18,15 @@
       ],
       "repo": "codemods-lab/utildroid-store",
       "iconUrl": "",
-      "screenshots": []
+      "screenshots": [],
+      "versionName": "1.0.0",
+      "versionCode": 10000,
+      "apkUrl": "https://github.com/codemods-lab/utildroid-store/releases/download/v1.0.0/utildroid-store-1.0.0.apk",
+      "sizeBytes": 1820332,
+      "sha256": "529a2e983b31f0222b90e80058f72da23b05270b01e553bcbedd9ba0e751fc2e",
+      "minSdk": 26,
+      "changelog": "- docs: macOS base64 command for KEYSTORE_BASE64\n- UtilDroid Store 1.0",
+      "releasedAt": "2026-11-10T18:03:00Z"
     },
     {
       "id": "ar-youtube",
@@ -31,7 +39,7 @@
         "phone",
         "tv"
       ],
-      "repo": "codemods-lab/ar-youtube",
+      "repo": "",
       "iconUrl": "",
       "screenshots": []
     },
@@ -45,7 +53,7 @@
       "platforms": [
         "phone"
       ],
-      "repo": "codemods-lab/spendlens",
+      "repo": "",
       "iconUrl": "",
       "screenshots": []
     },
@@ -59,7 +67,7 @@
       "platforms": [
         "phone"
       ],
-      "repo": "codemods-lab/chatlens",
+      "repo": "",
       "iconUrl": "",
       "screenshots": []
     }

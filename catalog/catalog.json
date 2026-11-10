@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-11-10T18:38:22Z",
+  "generatedAt": "2026-11-10T18:41:12Z",
   "store": {
     "name": "UtilDroid Store",
     "signingCertSha256": "933cb230c5355557e2d00d833f1cd2d9e669eae855a82f391a14f1bb0599d0d5"
@@ -41,7 +41,15 @@
       ],
       "repo": "",
       "iconUrl": "",
-      "screenshots": []
+      "screenshots": [],
+      "versionName": "1.0.1",
+      "versionCode": 10001,
+      "apkUrl": "https://github.com/codemods-lab/utildroid-apps/releases/download/ar-youtube-v1.0.1/ar-youtube-1.0.1.apk",
+      "sizeBytes": 19130423,
+      "sha256": "ba521d42de76132490e60ee910a10512c5ca5dce124b50a85e5fbe33152d9737",
+      "minSdk": 24,
+      "changelog": "- ci: drop setup-android (broken on current runners; SDK is preinstalled)",
+      "releasedAt": "2026-11-10T18:40:58Z"
     },
     {
       "id": "spendlens",

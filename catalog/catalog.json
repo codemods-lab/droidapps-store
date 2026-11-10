@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-11-10T18:04:50Z",
+  "generatedAt": "2026-11-10T18:37:30Z",
   "store": {
     "name": "UtilDroid Store",
     "signingCertSha256": "933cb230c5355557e2d00d833f1cd2d9e669eae855a82f391a14f1bb0599d0d5"
@@ -55,7 +55,15 @@
       ],
       "repo": "",
       "iconUrl": "",
-      "screenshots": []
+      "screenshots": [],
+      "versionName": "1.0.1",
+      "versionCode": 10001,
+      "apkUrl": "https://github.com/codemods-lab/utildroid-apps/releases/download/spendlens-v1.0.1/spendlens-1.0.1.apk",
+      "sizeBytes": 13771029,
+      "sha256": "88aeb264f06f3fedf8793d2cd90cb58b11818916ab903837d9cb7fc0431043d8",
+      "minSdk": 26,
+      "changelog": "- ci: drop setup-android (broken on current runners; SDK is preinstalled)",
+      "releasedAt": "2026-11-10T18:37:14Z"
     },
     {
       "id": "chatlens",

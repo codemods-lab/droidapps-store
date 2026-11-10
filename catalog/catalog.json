@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-11-10T18:37:30Z",
+  "generatedAt": "2026-11-10T18:38:22Z",
   "store": {
     "name": "UtilDroid Store",
     "signingCertSha256": "933cb230c5355557e2d00d833f1cd2d9e669eae855a82f391a14f1bb0599d0d5"
@@ -77,7 +77,15 @@
       ],
       "repo": "",
       "iconUrl": "",
-      "screenshots": []
+      "screenshots": [],
+      "versionName": "1.0.1",
+      "versionCode": 10001,
+      "apkUrl": "https://github.com/codemods-lab/utildroid-apps/releases/download/chatlens-v1.0.1/chatlens-1.0.1.apk",
+      "sizeBytes": 14506577,
+      "sha256": "3d890448357d3d043e51c10acb1554278ed6b150e980695b90d7b087a8f83647",
+      "minSdk": 26,
+      "changelog": "- ci: drop setup-android (broken on current runners; SDK is preinstalled)",
+      "releasedAt": "2026-11-10T18:38:09Z"
     }
   ]
 }

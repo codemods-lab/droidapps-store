@@ -1,9 +1,9 @@
 # UtilDroid Store
 
-A personal Android app store for my own sideloaded apps. Free to run: everything lives in public GitHub repos, GitHub Releases hosts the APKs, and GitHub Actions does the builds.
+A personal Android app store for my own sideloaded apps. Free to run: app source lives in private GitHub repos, signed APKs are published to the public `codemods-lab/utildroid-apps` repo's Releases, and GitHub Actions does the builds.
 
 ```
-app repo ──tag v1.2.0──▶ release.yml ──signed APK──▶ GitHub Release
+app repo (private) ──tag v1.2.0──▶ release.yml ──signed APK──▶ utildroid-apps Release "<id>-v1.2.0" (public)
                                │
                                └─ dispatch ──▶ utildroid-store: catalog.yml ──▶ catalog/catalog.json
                                                                                      │
@@ -23,7 +23,7 @@ app repo ──tag v1.2.0──▶ release.yml ──signed APK──▶ GitHub 
 | `scripts/build_catalog.py` | Builds `catalog.json` from `apps.yaml` + each app's latest release |
 | `.github/workflows/release.yml` | Tag → signed APK → GitHub Release → ping the catalog |
 | `.github/workflows/catalog.yml` | Rebuilds the catalog on push, on ping, and every 6 hours |
-| `templates/` | `release.yml` and a Gradle signing snippet to copy into other app repos |
+| `templates/` | `release.yml` and a Gradle signing snippet to copy into other (private) app repos |
 
 ## One-time setup
 
@@ -40,7 +40,7 @@ app repo ──tag v1.2.0──▶ release.yml ──signed APK──▶ GitHub 
    keytool -list -v -keystore release.jks -alias utildroid | grep SHA256
    ```
 
-4. **Add repo secrets** (Settings → Secrets and variables → Actions) in this repo and every app repo:
+4. **Add repo secrets** (Settings → Secrets and variables → Actions) in this repo and every app repo. The first four go everywhere; `UTILDROID_TOKEN` only in app repos:
 
    | Secret | Value |
    | --- | --- |
@@ -48,19 +48,19 @@ app repo ──tag v1.2.0──▶ release.yml ──signed APK──▶ GitHub 
    | `KEYSTORE_PASSWORD` | keystore password |
    | `KEY_ALIAS` | `utildroid` |
    | `KEY_PASSWORD` | key password |
-   | `STORE_DISPATCH_TOKEN` | fine-grained token with **Contents: read and write** on `utildroid-store` only (optional; without it the catalog still refreshes every 6 hours) |
+   | `UTILDROID_TOKEN` | fine-grained token with **Contents: read and write** on `utildroid-apps` and `utildroid-store` only. Publishes the APK and pings the catalog |
 
 5. **Release the store itself:** `git tag v1.0.0 && git push origin v1.0.0`. Download the APK from the Release page on your phone, install it once, and allow "Install unknown apps" for UtilDroid when asked. From then on it updates itself.
 
 ## Adding an app
 
-1. In the app's repo:
+1. In the app's repo (private is fine; its name should match the app's `id`):
    - copy `templates/release.yml` to `.github/workflows/release.yml`
    - merge `templates/signing.gradle.kts` into its `app/build.gradle.kts`
-   - add the same five secrets
+   - add the five secrets
    - set its `applicationId` under `com.innovcrest.*`
-2. Push a tag, e.g. `v1.0.0`. The workflow builds, signs and publishes the APK.
-3. Here, add an entry to `catalog/apps.yaml` (and optionally `catalog/apps/<id>/icon.png`) and push.
+2. Here, add an entry to `catalog/apps.yaml` with `releases: codemods-lab/utildroid-apps` (and optionally `catalog/apps/<id>/icon.png`) and push.
+3. Push a tag in the app repo, e.g. `v1.0.0`. The workflow builds, signs and publishes the APK to `utildroid-apps`, then pings the catalog.
 4. Pull to refresh in the store. The app shows up with an **Install** button.
 
 ## Releasing an update
@@ -70,7 +70,7 @@ Push a new tag in the app's repo (`v1.1.0`). The version code comes from the tag
 ## Things to know
 
 - **Apps already installed with a different key** (e.g. debug builds from Android Studio) can't be updated by the store. Uninstall them once, then install from the store.
-- **Public repos mean public APKs.** Don't put API keys or personal data inside any app.
+- **APKs are public** even though the source is private (anyone can download and decompile them). Don't put API keys or personal data inside any app.
 - **Silent updates** need Android 12+ and work for apps the store installed itself. Otherwise Android shows its normal confirm screen.
 - **Android developer verification** (Google's 2027 sideloading rules) has no India date yet. When it opens, register the `com.innovcrest.*` package names on a free limited-distribution account so installs keep working normally.
 

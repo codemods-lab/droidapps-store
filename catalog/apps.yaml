@@ -6,6 +6,8 @@
 #   repo         owner/name of the app's public GitHub repo
 #   packageName  must match the APK's applicationId exactly
 #   platforms    [phone] or [phone, tv]; the store only lists apps that include phone
+#   releases     optional; for private repos. The public repo the APKs are published to,
+#                tagged <id>-v1.2.3 (see templates/release.yml)
 
 store:
   name: UtilDroid Store
@@ -13,7 +15,7 @@ store:
   # Settings > About, or run:
   #   keytool -list -v -keystore release.jks -alias utildroid | grep SHA256
   # Leave empty until you have one; the signature check is skipped while empty.
-  signingCertSha256: ""
+  signingCertSha256: "933cb230c5355557e2d00d833f1cd2d9e669eae855a82f391a14f1bb0599d0d5"
 
 apps:
   - id: utildroid-store
@@ -26,6 +28,7 @@ apps:
 
   - id: ar-youtube
     repo: codemods-lab/ar-youtube
+    releases: codemods-lab/utildroid-apps
     packageName: com.innovcrest.aryoutube
     name: AR YouTube
     summary: Ad-free YouTube with SponsorBlock
@@ -35,6 +38,7 @@ apps:
 
   - id: spendlens
     repo: codemods-lab/spendlens
+    releases: codemods-lab/utildroid-apps
     packageName: com.innovcrest.spendlens
     name: SpendLens
     summary: Spends from bank SMS, fully on-device
@@ -43,6 +47,7 @@ apps:
 
   - id: chatlens
     repo: codemods-lab/chatlens
+    releases: codemods-lab/utildroid-apps
     packageName: com.innovcrest.chatlens
     name: ChatLens
     summary: WhatsApp insights, fully on-device

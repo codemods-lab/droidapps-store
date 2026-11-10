@@ -1,9 +1,12 @@
-# Builds a signed release APK when you push a tag like v1.2.3, attaches it to a
-# GitHub Release, then pings utildroid-store so the catalog picks it up.
+# Builds a signed release APK when you push a tag like v1.2.3, publishes it to the public
+# APK repo (codemods-lab/utildroid-apps) as release "<app-id>-v1.2.3", then pings
+# utildroid-store so the catalog picks it up. The app's own repo can stay private.
 #
-# The same file works in every app repo (copy it from templates/release.yml).
-# Repo secrets needed: KEYSTORE_BASE64, KEYSTORE_PASSWORD, KEY_ALIAS, KEY_PASSWORD,
-# and STORE_DISPATCH_TOKEN (optional; without it the catalog still updates every 6 hours).
+# Copy to .github/workflows/release.yml in each app repo.
+# Repo secrets needed: KEYSTORE_BASE64, KEYSTORE_PASSWORD, KEY_ALIAS, KEY_PASSWORD, UTILDROID_TOKEN
+#   UTILDROID_TOKEN: fine-grained token with Contents: read and write on
+#   codemods-lab/utildroid-apps and codemods-lab/utildroid-store.
+# APP_ID must match the app's `id` in utildroid-store/catalog/apps.yaml (defaults to the repo name).
 name: Release APK
 
 on:
@@ -11,11 +14,12 @@ on:
     tags: ["v*"]
 
 permissions:
-  contents: write
+  contents: read
 
 env:
-  STORE_REPO: ${{ vars.STORE_REPO || 'codemods-lab/utildroid-store' }}
-  STORE_TOKEN: ${{ secrets.STORE_DISPATCH_TOKEN }}
+  APP_ID: ${{ vars.APP_ID || github.event.repository.name }}
+  RELEASES_REPO: codemods-lab/utildroid-apps
+  STORE_REPO: codemods-lab/utildroid-store
 
 jobs:
   release:
@@ -29,6 +33,8 @@ jobs:
         with:
           distribution: temurin
           java-version: "17"
+
+      - uses: android-actions/setup-android@v3
 
       - uses: gradle/actions/setup-gradle@v4
 
@@ -54,7 +60,7 @@ jobs:
           chmod +x ./gradlew
           ./gradlew assembleRelease --no-daemon
           APK=$(ls app/build/outputs/apk/release/*.apk | head -1)
-          cp "$APK" "${{ github.event.repository.name }}-${VERSION_NAME}.apk"
+          cp "$APK" "${APP_ID}-${VERSION_NAME}.apk"
 
       - name: Release notes from commits since the previous tag
         run: |
@@ -63,16 +69,22 @@ jobs:
           git log --no-merges --pretty='- %s' "$RANGE" > notes.md
           [ -s notes.md ] || echo "- Release $VERSION_NAME" > notes.md
 
-      - uses: softprops/action-gh-release@v2
+      - name: Publish to the public APK repo
+        uses: softprops/action-gh-release@v2
         with:
+          repository: ${{ env.RELEASES_REPO }}
+          token: ${{ secrets.UTILDROID_TOKEN }}
+          tag_name: ${{ env.APP_ID }}-${{ github.ref_name }}
+          name: ${{ env.APP_ID }} ${{ env.VERSION_NAME }}
           files: "*.apk"
           body_path: notes.md
 
       - name: Tell UtilDroid Store to rebuild its catalog
-        if: env.STORE_TOKEN != ''
+        env:
+          GH_TOKEN: ${{ secrets.UTILDROID_TOKEN }}
         run: |
           curl -fsS -X POST \
-            -H "Authorization: Bearer $STORE_TOKEN" \
+            -H "Authorization: Bearer $GH_TOKEN" \
             -H "Accept: application/vnd.github+json" \
             "https://api.github.com/repos/$STORE_REPO/dispatches" \
             -d '{"event_type":"app-released"}'

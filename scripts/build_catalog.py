@@ -107,13 +107,32 @@ def media(app_id):
     return icon, shots
 
 
+def latest_release(entry):
+    """Newest published release for an app, or None.
+
+    Public apps release in their own repo. Private apps set `releases:` to a shared public
+    repo, where each release is tagged `<id>-v1.2.3`.
+    """
+    shared = entry.get("releases")
+    if not shared:
+        return api(f"/repos/{entry['repo']}/releases/latest")
+    prefix = f"{entry['id']}-v"
+    for rel in api(f"/repos/{shared}/releases?per_page=100"):
+        if rel.get("tag_name", "").startswith(prefix) and not rel.get("draft") and not rel.get("prerelease"):
+            return rel
+    return None
+
+
 def release_fields(entry, previous, workdir):
     """Latest-release fields for one app, or the previous ones if that fails."""
     keep = {k: previous[k] for k in (
         "versionName", "versionCode", "apkUrl", "sizeBytes", "sha256", "minSdk", "changelog", "releasedAt",
     ) if previous and k in previous}
     try:
-        rel = api(f"/repos/{entry['repo']}/releases/latest")
+        rel = latest_release(entry)
+        if rel is None:
+            log(f"  {entry['id']}: no release yet")
+            return {}
     except urllib.error.HTTPError as e:
         if e.code == 404:
             log(f"  {entry['id']}: no release yet")
@@ -176,7 +195,7 @@ def main():
             for key in ("id", "repo", "packageName", "name"):
                 if not entry.get(key):
                     sys.exit(f"apps.yaml: every app needs '{key}' ({entry})")
-            log(f"{entry['id']} <- {entry['repo']}")
+            log(f"{entry['id']} <- {entry.get('releases') or entry['repo']}")
             icon, shots = media(entry["id"])
             app = {
                 "id": entry["id"],
@@ -186,7 +205,8 @@ def main():
                 "description": entry.get("description", ""),
                 "category": entry.get("category", "Tools"),
                 "platforms": entry.get("platforms", ["phone"]),
-                "repo": entry["repo"],
+                # Private source repos aren't linked from the store.
+                "repo": "" if entry.get("releases") else entry["repo"],
                 "iconUrl": icon,
                 "screenshots": shots,
             }

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-11-11T17:20:11Z",
+  "generatedAt": "2026-11-11T20:06:56Z",
   "store": {
     "name": "UtilDroid Store",
     "signingCertSha256": "933cb230c5355557e2d00d833f1cd2d9e669eae855a82f391a14f1bb0599d0d5"
@@ -116,6 +116,28 @@
       "minSdk": 31,
       "changelog": "- Publish releases to utildroid-apps and keep Glance action callbacks\n- Add Techno Widgets v1: six glass widgets, theme store and config app",
       "releasedAt": "2026-11-11T17:19:56Z"
+    },
+    {
+      "id": "bhoomi-converter",
+      "name": "Bhoomi Converter",
+      "packageName": "com.innovcrest.bhoomi",
+      "summary": "Indian land units by state, with a 3D plot view",
+      "description": "Converts bigha, biswa, kanal, marla, katha, guntha and more into sq ft, gaj, acre and hectare for your state, lets you set your local bigha size, and shows the plot in 3D beside a football field. Works offline in eight languages.",
+      "category": "Tools",
+      "platforms": [
+        "phone"
+      ],
+      "repo": "",
+      "iconUrl": "",
+      "screenshots": [],
+      "versionName": "1.0.0",
+      "versionCode": 10000,
+      "apkUrl": "https://github.com/codemods-lab/utildroid-apps/releases/download/bhoomi-converter-v1.0.0/bhoomi-converter-1.0.0.apk",
+      "sizeBytes": 17552972,
+      "sha256": "7db08b55f7f8a3947dfa0e9d6f573de74693342bfc7c73c2ce42e81c5f9c2fe6",
+      "minSdk": 26,
+      "changelog": "- Six more languages, release size and README\n- Local units, Language and 3D plot screens\n- Project skeleton, conversion engine, Convert screen and state picker",
+      "releasedAt": "2026-11-11T18:55:17Z"
     }
   ]
 }

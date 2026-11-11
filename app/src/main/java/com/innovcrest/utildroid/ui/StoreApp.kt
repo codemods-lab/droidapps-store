@@ -2,7 +2,10 @@ package com.innovcrest.utildroid.ui
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Download
+import androidx.compose.material.icons.filled.FileDownload
+import androidx.compose.material.icons.filled.GridView
+import androidx.compose.material.icons.filled.Tune
+import androidx.compose.material.icons.outlined.FileDownload
 import androidx.compose.material.icons.outlined.GridView
 import androidx.compose.material.icons.outlined.Tune
 import androidx.compose.material3.Badge
@@ -19,6 +22,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontWeight
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -30,14 +34,13 @@ import com.innovcrest.utildroid.ui.screens.BrowseScreen
 import com.innovcrest.utildroid.ui.screens.DetailScreen
 import com.innovcrest.utildroid.ui.screens.SettingsScreen
 import com.innovcrest.utildroid.ui.screens.UpdatesScreen
-import com.innovcrest.utildroid.ui.theme.Brand
 
-private data class Tab(val route: String, val label: String, val icon: ImageVector)
+private data class Tab(val route: String, val label: String, val icon: ImageVector, val selectedIcon: ImageVector)
 
 private val tabs = listOf(
-    Tab("browse", "Browse", Icons.Outlined.GridView),
-    Tab("updates", "Updates", Icons.Outlined.Download),
-    Tab("settings", "Settings", Icons.Outlined.Tune),
+    Tab("browse", "Browse", Icons.Outlined.GridView, Icons.Filled.GridView),
+    Tab("updates", "Updates", Icons.Outlined.FileDownload, Icons.Filled.FileDownload),
+    Tab("settings", "Settings", Icons.Outlined.Tune, Icons.Filled.Tune),
 )
 
 @Composable
@@ -46,6 +49,7 @@ fun StoreApp(vm: StoreViewModel, openUpdates: Boolean, onUpdatesOpened: () -> Un
     val ui by vm.ui.collectAsStateWithLifecycle()
     val backStack by nav.currentBackStackEntryAsState()
     val route = backStack?.destination?.route
+    val colors = MaterialTheme.colorScheme
 
     LaunchedEffect(openUpdates) {
         if (openUpdates) {
@@ -55,30 +59,34 @@ fun StoreApp(vm: StoreViewModel, openUpdates: Boolean, onUpdatesOpened: () -> Un
     }
 
     Scaffold(
-        containerColor = MaterialTheme.colorScheme.background,
+        containerColor = colors.background,
         bottomBar = {
             if (tabs.any { it.route == route }) {
-                NavigationBar(containerColor = MaterialTheme.colorScheme.surface) {
+                NavigationBar(containerColor = colors.surfaceContainerHigh) {
                     tabs.forEach { tab ->
+                        val selected = route == tab.route
                         NavigationBarItem(
-                            selected = route == tab.route,
+                            selected = selected,
                             onClick = { nav.goToTab(tab.route) },
-                            label = { Text(tab.label) },
+                            label = { Text(tab.label, fontWeight = if (selected) FontWeight.Bold else FontWeight.Medium) },
                             icon = {
+                                val image = if (selected) tab.selectedIcon else tab.icon
                                 if (tab.route == "updates" && ui.pendingUpdateCount > 0) {
                                     BadgedBox(badge = {
-                                        Badge(containerColor = Brand.Accent, contentColor = Brand.OnAccent) {
-                                            Text(ui.pendingUpdateCount.toString())
+                                        Badge(containerColor = colors.error, contentColor = colors.onError) {
+                                            Text(ui.pendingUpdateCount.toString(), fontWeight = FontWeight.Bold)
                                         }
-                                    }) { Icon(tab.icon, contentDescription = null) }
+                                    }) { Icon(image, contentDescription = null) }
                                 } else {
-                                    Icon(tab.icon, contentDescription = null)
+                                    Icon(image, contentDescription = null)
                                 }
                             },
                             colors = NavigationBarItemDefaults.colors(
-                                selectedIconColor = MaterialTheme.colorScheme.primary,
-                                selectedTextColor = MaterialTheme.colorScheme.primary,
-                                indicatorColor = MaterialTheme.colorScheme.secondaryContainer,
+                                selectedIconColor = colors.onSecondaryContainer,
+                                selectedTextColor = colors.onSecondaryContainer,
+                                indicatorColor = colors.primaryContainer,
+                                unselectedIconColor = colors.onSurfaceVariant,
+                                unselectedTextColor = colors.onSurfaceVariant,
                             ),
                         )
                     }
@@ -88,11 +96,7 @@ fun StoreApp(vm: StoreViewModel, openUpdates: Boolean, onUpdatesOpened: () -> Un
     ) { padding ->
         NavHost(nav, startDestination = "browse", modifier = Modifier.padding(padding)) {
             composable("browse") {
-                BrowseScreen(
-                    vm,
-                    onOpen = { nav.navigate("detail/${it.app.id}") },
-                    onShowUpdates = { nav.goToTab("updates") },
-                )
+                BrowseScreen(vm, onOpen = { nav.navigate("detail/${it.app.id}") })
             }
             composable("updates") {
                 UpdatesScreen(vm, onOpen = { nav.navigate("detail/${it.app.id}") })

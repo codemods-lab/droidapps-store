@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-11-11T17:12:58Z",
+  "generatedAt": "2026-11-11T17:20:11Z",
   "store": {
     "name": "UtilDroid Store",
     "signingCertSha256": "933cb230c5355557e2d00d833f1cd2d9e669eae855a82f391a14f1bb0599d0d5"
@@ -107,7 +107,15 @@
       ],
       "repo": "",
       "iconUrl": "https://raw.githubusercontent.com/codemods-lab/utildroid-store/main/catalog/apps/techno-widgets/icon.png",
-      "screenshots": []
+      "screenshots": [],
+      "versionName": "1.0.0",
+      "versionCode": 10000,
+      "apkUrl": "https://github.com/codemods-lab/utildroid-apps/releases/download/techno-widgets-v1.0.0/techno-widgets-1.0.0.apk",
+      "sizeBytes": 3638505,
+      "sha256": "34f4475ad90fcac92db0cdcdb63257f5c0d87c5b3b4098b1ecbe96419118e01f",
+      "minSdk": 31,
+      "changelog": "- Publish releases to utildroid-apps and keep Glance action callbacks\n- Add Techno Widgets v1: six glass widgets, theme store and config app",
+      "releasedAt": "2026-11-11T17:19:56Z"
     }
   ]
 }

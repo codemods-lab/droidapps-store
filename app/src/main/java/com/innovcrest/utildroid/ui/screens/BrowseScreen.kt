@@ -1,13 +1,10 @@
 package com.innovcrest.utildroid.ui.screens
 
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -16,20 +13,21 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Refresh
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material.icons.outlined.FileDownload
+import androidx.compose.material.icons.outlined.Shield
+import androidx.compose.material.icons.rounded.Check
+import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -38,32 +36,31 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.innovcrest.utildroid.ui.AppStatus
 import com.innovcrest.utildroid.ui.AppUi
+import com.innovcrest.utildroid.ui.StoreUi
 import com.innovcrest.utildroid.ui.StoreViewModel
-import com.innovcrest.utildroid.ui.common.AppIcon
-import com.innovcrest.utildroid.ui.common.DownloadBar
-import com.innovcrest.utildroid.ui.common.PrimaryActionButton
-import com.innovcrest.utildroid.ui.common.StoreCard
-import com.innovcrest.utildroid.ui.common.isFailure
+import com.innovcrest.utildroid.ui.common.AppRow
+import com.innovcrest.utildroid.ui.common.EmptyState
+import com.innovcrest.utildroid.ui.common.GroupGap
+import com.innovcrest.utildroid.ui.common.ScreenTitle
+import com.innovcrest.utildroid.ui.common.StoreBanner
+import com.innovcrest.utildroid.ui.common.StoreGlyph
+import com.innovcrest.utildroid.ui.common.groupedShape
 import com.innovcrest.utildroid.ui.common.openInstallPermissionSettings
 import com.innovcrest.utildroid.ui.common.relativeTime
-import com.innovcrest.utildroid.ui.common.statusLine
-import com.innovcrest.utildroid.ui.theme.Brand
+
+private val BlockGap = 16.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BrowseScreen(
-    vm: StoreViewModel,
-    onOpen: (AppUi) -> Unit,
-    onShowUpdates: () -> Unit,
-) {
+fun BrowseScreen(vm: StoreViewModel, onOpen: (AppUi) -> Unit) {
     val ui by vm.ui.collectAsStateWithLifecycle()
     var category by rememberSaveable { mutableStateOf<String?>(null) }
     val visible = ui.apps.filter { category == null || it.app.category == category }
@@ -71,60 +68,47 @@ fun BrowseScreen(
 
     PullToRefreshBox(isRefreshing = ui.refreshing, onRefresh = vm::refresh, modifier = Modifier.fillMaxSize()) {
         LazyColumn(
-            contentPadding = PaddingValues(start = 20.dp, end = 20.dp, bottom = 24.dp),
-            verticalArrangement = Arrangement.spacedBy(14.dp),
+            contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 24.dp),
             modifier = Modifier.fillMaxSize(),
         ) {
-            item { BrowseHeader(onRefresh = vm::refresh) }
+            item { BrowseHeader(subtitle = headerSubtitle(ui), onRefresh = vm::refresh) }
 
             if (!ui.canInstall) {
                 item {
-                    Banner(
+                    StoreBanner(
+                        icon = Icons.Outlined.Shield,
                         title = "Allow installs from UtilDroid",
                         subtitle = "Android needs this once before the store can install apps",
                         action = "Allow",
                         onAction = { openInstallPermissionSettings(context) },
+                        modifier = Modifier.padding(bottom = BlockGap),
                     )
                 }
             }
 
             ui.self?.takeIf { it.status is AppStatus.UpdateAvailable || it.status is AppStatus.Busy }?.let { self ->
+                val busy = self.status is AppStatus.Busy
                 item {
-                    Banner(
-                        title = "Store update ready",
+                    StoreBanner(
+                        icon = Icons.Outlined.FileDownload,
+                        title = if (busy) "Updating the store" else "Store update ready",
                         subtitle = "UtilDroid Store ${self.app.versionName}",
-                        action = if (self.status is AppStatus.Busy) "Updating…" else "Update",
+                        action = if (busy) "Updating…" else "Update",
                         onAction = { vm.primaryAction(self) },
+                        actionEnabled = !busy,
+                        modifier = Modifier.padding(bottom = BlockGap),
                     )
                 }
             }
 
-            ui.error?.let { message -> item { InfoStrip(message) } }
-
-            if (ui.loaded) {
-                item {
-                    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
-                        Text(
-                            "${ui.apps.size} apps · catalog updated ${relativeTime(ui.lastRefreshedMillis)}",
-                            fontSize = 13.sp,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.weight(1f),
-                        )
-                        if (ui.pendingUpdateCount > 0) {
-                            TextButton(onClick = onShowUpdates) {
-                                Text(
-                                    "${ui.pendingUpdateCount} update${if (ui.pendingUpdateCount > 1) "s" else ""}",
-                                    fontWeight = FontWeight.SemiBold,
-                                )
-                            }
-                        }
-                    }
-                }
-            }
+            ui.error?.let { message -> item { ErrorStrip(message, Modifier.padding(bottom = BlockGap)) } }
 
             if (ui.categories.size > 1) {
                 item {
-                    LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    LazyRow(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        modifier = Modifier.padding(bottom = BlockGap),
+                    ) {
                         item { CategoryChip("All", category == null) { category = null } }
                         items(ui.categories) { cat -> CategoryChip(cat, category == cat) { category = cat } }
                     }
@@ -146,125 +130,89 @@ fun BrowseScreen(
                 }
             }
 
-            items(visible, key = { it.app.id }) { item ->
-                AppCard(item, onClick = { onOpen(item) }, onAction = { vm.primaryAction(item) })
+            itemsIndexed(visible, key = { _, item -> item.app.id }) { index, item ->
+                AppRow(
+                    item,
+                    shape = groupedShape(index, visible.size),
+                    onClick = { onOpen(item) },
+                    onAction = { vm.primaryAction(item) },
+                    modifier = Modifier.padding(top = if (index > 0) GroupGap else 0.dp),
+                )
             }
         }
     }
 }
 
-@Composable
-private fun BrowseHeader(onRefresh: () -> Unit) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
-    ) {
-        Box(
-            Modifier.size(36.dp).background(Brand.Accent, RoundedCornerShape(10.dp)),
-            contentAlignment = Alignment.Center,
-        ) {
-            Text("U", color = Brand.OnAccent, fontWeight = FontWeight.Bold, fontSize = 18.sp)
-        }
-        Spacer(Modifier.size(10.dp))
-        Text("UtilDroid", fontSize = 22.sp, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
-        OutlinedIconButton(
-            onClick = onRefresh,
-            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
-            modifier = Modifier.size(44.dp),
-        ) {
-            Icon(Icons.Outlined.Refresh, contentDescription = "Refresh catalog")
-        }
+private fun headerSubtitle(ui: StoreUi): String = when {
+    ui.loaded -> {
+        val n = ui.apps.size
+        "$n app${if (n == 1) "" else "s"} · catalog updated ${relativeTime(ui.lastRefreshedMillis)}"
     }
+    ui.refreshing -> "Loading catalog…"
+    else -> "Catalog not loaded"
 }
 
 @Composable
-fun AppCard(item: AppUi, onClick: () -> Unit, onAction: () -> Unit) {
-    StoreCard(onClick = onClick, modifier = Modifier.fillMaxWidth()) {
-        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(14.dp)) {
-                AppIcon(item.app, 56.dp)
-                Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
-                    Text(item.app.name, fontSize = 15.sp, fontWeight = FontWeight.SemiBold, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                    if (item.app.summary.isNotBlank()) {
-                        Text(
-                            item.app.summary,
-                            fontSize = 12.sp,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                        )
-                    }
-                    Text(
-                        statusLine(item),
-                        fontSize = 11.sp,
-                        color = if (isFailure(item)) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant,
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis,
-                    )
+private fun BrowseHeader(subtitle: String, onRefresh: () -> Unit) {
+    val colors = MaterialTheme.colorScheme
+    Column(Modifier.fillMaxWidth().padding(top = 8.dp, bottom = 20.dp)) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier.fillMaxWidth().height(56.dp),
+        ) {
+            StoreGlyph(40.dp, container = colors.primary, content = colors.onPrimary)
+            Surface(
+                onClick = onRefresh,
+                shape = CircleShape,
+                color = colors.secondaryContainer,
+                contentColor = colors.onSecondaryContainer,
+                modifier = Modifier.size(48.dp),
+            ) {
+                Box(contentAlignment = Alignment.Center) {
+                    Icon(Icons.Rounded.Refresh, contentDescription = "Refresh catalog", modifier = Modifier.size(22.dp))
                 }
-                PrimaryActionButton(item, onClick = onAction)
             }
-            DownloadBar(item)
         }
+        ScreenTitle("UtilDroid", subtitle = subtitle, modifier = Modifier.padding(top = 8.dp))
     }
 }
 
 @Composable
-fun Banner(title: String, subtitle: String, action: String, onAction: () -> Unit) {
+private fun ErrorStrip(message: String, modifier: Modifier = Modifier) {
     Surface(
         shape = RoundedCornerShape(16.dp),
-        color = MaterialTheme.colorScheme.secondaryContainer,
-        border = BorderStroke(1.dp, Brand.Accent.copy(alpha = 0.45f)),
-        modifier = Modifier.fillMaxWidth(),
+        color = MaterialTheme.colorScheme.errorContainer,
+        contentColor = MaterialTheme.colorScheme.onErrorContainer,
+        modifier = modifier.fillMaxWidth(),
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(start = 16.dp, end = 12.dp, top = 12.dp, bottom = 12.dp)) {
-            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                Text(title, fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
-                Text(subtitle, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSecondaryContainer)
-            }
-            Button(
-                onClick = onAction,
-                colors = ButtonDefaults.buttonColors(containerColor = Brand.Accent, contentColor = Brand.OnAccent),
-                modifier = Modifier.height(44.dp),
-            ) { Text(action, fontWeight = FontWeight.SemiBold) }
-        }
-    }
-}
-
-@Composable
-private fun InfoStrip(message: String) {
-    Surface(
-        shape = RoundedCornerShape(12.dp),
-        color = MaterialTheme.colorScheme.surfaceVariant,
-        modifier = Modifier.fillMaxWidth(),
-    ) {
-        Text(message, fontSize = 13.sp, modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp))
+        Text(message, fontSize = 13.sp, lineHeight = 18.sp, modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp))
     }
 }
 
 @Composable
 private fun CategoryChip(label: String, selected: Boolean, onClick: () -> Unit) {
+    val colors = MaterialTheme.colorScheme
     FilterChip(
         selected = selected,
         onClick = onClick,
-        label = { Text(label, fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Normal) },
-        shape = RoundedCornerShape(18.dp),
+        label = { Text(label, fontSize = 14.sp, fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Medium) },
+        leadingIcon = if (selected) {
+            { Icon(Icons.Rounded.Check, contentDescription = null, modifier = Modifier.size(16.dp)) }
+        } else null,
+        shape = RoundedCornerShape(12.dp),
         colors = FilterChipDefaults.filterChipColors(
-            selectedContainerColor = MaterialTheme.colorScheme.onSurface,
-            selectedLabelColor = MaterialTheme.colorScheme.surface,
+            containerColor = Color.Transparent,
+            labelColor = colors.onSurfaceVariant,
+            selectedContainerColor = colors.secondaryContainer,
+            selectedLabelColor = colors.onSecondaryContainer,
+            selectedLeadingIconColor = colors.onSecondaryContainer,
         ),
+        border = FilterChipDefaults.filterChipBorder(
+            enabled = true,
+            selected = selected,
+            borderColor = colors.outlineVariant,
+        ),
+        modifier = Modifier.height(36.dp),
     )
-}
-
-@Composable
-fun EmptyState(title: String, body: String?, action: String? = null, onAction: () -> Unit = {}) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        modifier = Modifier.fillMaxWidth().padding(vertical = 48.dp, horizontal = 16.dp),
-    ) {
-        Text(title, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
-        if (body != null) Text(body, fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
-        if (action != null) TextButton(onClick = onAction) { Text(action) }
-    }
 }

@@ -53,3 +53,13 @@ apps:
     summary: WhatsApp insights, fully on-device
     category: Tools
     platforms: [phone]
+
+  - id: techno-widgets
+    repo: codemods-lab/techno-widgets
+    releases: codemods-lab/utildroid-apps
+    packageName: com.innovcrest.technowidgets
+    name: Techno Widgets
+    summary: Glass home-screen widgets with one accent color
+    description: Clock, battery, app dock, weather, next event and steps widgets that restyle together when you change the accent.
+    category: Tools
+    platforms: [phone]

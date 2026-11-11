@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-11-10T18:41:12Z",
+  "generatedAt": "2026-11-11T17:12:58Z",
   "store": {
     "name": "UtilDroid Store",
     "signingCertSha256": "933cb230c5355557e2d00d833f1cd2d9e669eae855a82f391a14f1bb0599d0d5"
@@ -19,14 +19,14 @@
       "repo": "codemods-lab/utildroid-store",
       "iconUrl": "",
       "screenshots": [],
-      "versionName": "1.0.0",
-      "versionCode": 10000,
-      "apkUrl": "https://github.com/codemods-lab/utildroid-store/releases/download/v1.0.0/utildroid-store-1.0.0.apk",
-      "sizeBytes": 1820332,
-      "sha256": "529a2e983b31f0222b90e80058f72da23b05270b01e553bcbedd9ba0e751fc2e",
+      "versionName": "1.1.0",
+      "versionCode": 10100,
+      "apkUrl": "https://github.com/codemods-lab/utildroid-store/releases/download/v1.1.0/utildroid-store-1.1.0.apk",
+      "sizeBytes": 1853096,
+      "sha256": "a46ad84d210e74ddbdb101e1697d5d18caaacab5631a370f6671bce872d37d09",
       "minSdk": 26,
-      "changelog": "- docs: macOS base64 command for KEYSTORE_BASE64\n- UtilDroid Store 1.0",
-      "releasedAt": "2026-11-10T18:03:00Z"
+      "changelog": "- ui: redesign store screens to the Material 3 Expressive design\n- docs: add wiki-style docs/ (architecture, operations/development, decisions, roadmap)\n- catalog: update\n- catalog: update\n- catalog: update\n- ci: drop setup-android (broken on current runners; SDK is preinstalled)\n- Release builds use only the release key; README context and status\n- catalog: update\n- Private app repos: publish APKs to public utildroid-apps repo",
+      "releasedAt": "2026-11-11T17:12:23Z"
     },
     {
       "id": "ar-youtube",
@@ -94,6 +94,20 @@
       "minSdk": 26,
       "changelog": "- ci: drop setup-android (broken on current runners; SDK is preinstalled)",
       "releasedAt": "2026-11-10T18:38:09Z"
+    },
+    {
+      "id": "techno-widgets",
+      "name": "Techno Widgets",
+      "packageName": "com.innovcrest.technowidgets",
+      "summary": "Glass home-screen widgets with one accent color",
+      "description": "Clock, battery, app dock, weather, next event and steps widgets that restyle together when you change the accent.",
+      "category": "Tools",
+      "platforms": [
+        "phone"
+      ],
+      "repo": "",
+      "iconUrl": "https://raw.githubusercontent.com/codemods-lab/utildroid-store/main/catalog/apps/techno-widgets/icon.png",
+      "screenshots": []
     }
   ]
 }

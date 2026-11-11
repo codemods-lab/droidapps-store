@@ -39,6 +39,8 @@ Each app's own README has a "Known gaps and ideas" section. Store-level ideas: a
 | `.github/workflows/release.yml` | Tag → signed APK → GitHub Release → ping the catalog |
 | `.github/workflows/catalog.yml` | Rebuilds the catalog on push, on ping, and every 6 hours |
 | `templates/` | `release.yml` and a Gradle signing snippet to copy into other (private) app repos |
+| `web/` | The landing page: one static `index.html`, no build step. Live at https://codemods-lab.github.io/utildroid-store/ |
+| `.github/workflows/pages.yml` | Deploys `web/` to GitHub Pages on pushes to `main` that touch it |
 
 ## One-time setup
 
@@ -99,4 +101,9 @@ Needs JDK 17+ and the Android SDK (platform 35). Release builds are only ever si
 export KEYSTORE_FILE=~/keys/release.jks KEY_ALIAS=utildroid
 read -s KEYSTORE_PASSWORD && export KEYSTORE_PASSWORD KEY_PASSWORD=$KEYSTORE_PASSWORD
 ./gradlew assembleRelease
+```
+
+To preview the landing page, open `web/index.html` in a browser, or serve the folder:
+```bash
+python3 -m http.server 8000 --directory web
 ```

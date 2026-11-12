@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="launcher_bg">#146C2E</color>
+    <color name="launcher_bg">#F0F5ED</color>
     <color name="window_bg">#F0F5ED</color>
 
     <style name="Theme.UtilDroid" parent="android:Theme.Material.Light.NoActionBar">

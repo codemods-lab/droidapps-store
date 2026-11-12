@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-11-12T12:49:08Z",
+  "generatedAt": "2026-11-12T13:24:41Z",
   "store": {
     "name": "DroidApps Store",
     "signingCertSha256": "933cb230c5355557e2d00d833f1cd2d9e669eae855a82f391a14f1bb0599d0d5"
@@ -19,14 +19,14 @@
       "repo": "codemods-lab/droidapps-store",
       "iconUrl": "",
       "screenshots": [],
-      "versionName": "1.1.0",
-      "versionCode": 10100,
-      "apkUrl": "https://github.com/codemods-lab/droidapps-store/releases/download/v1.1.0/utildroid-store-1.1.0.apk",
-      "sizeBytes": 1853096,
-      "sha256": "a46ad84d210e74ddbdb101e1697d5d18caaacab5631a370f6671bce872d37d09",
+      "versionName": "1.2.0",
+      "versionCode": 10200,
+      "apkUrl": "https://github.com/codemods-lab/droidapps-store/releases/download/v1.2.0/droidapps-store-1.2.0.apk",
+      "sizeBytes": 1854316,
+      "sha256": "b65f1715afe85307364c0142bfceeee2c0cf7e8b012f5281dabf95ab9502c33b",
       "minSdk": 26,
-      "changelog": "- ui: redesign store screens to the Material 3 Expressive design\n- docs: add wiki-style docs/ (architecture, operations/development, decisions, roadmap)\n- catalog: update\n- catalog: update\n- catalog: update\n- ci: drop setup-android (broken on current runners; SDK is preinstalled)\n- Release builds use only the release key; README context and status\n- catalog: update\n- Private app repos: publish APKs to public utildroid-apps repo",
-      "releasedAt": "2026-11-11T17:12:23Z"
+      "changelog": "- ci: rebase the catalog commit onto main before pushing\n- catalog: update\n- Rename UtilDroid to DroidApps Store (#6)\n- ui: launcher icon uses the store mark (green cookie with the tiles-plus glyph) (#5)\n- Add Ludo to the catalog and landing page (#4)\n- catalog: update\n- Add Bhoomi Converter to the catalog and landing page (#3)\n- web: add landing page and GitHub Pages deploy\n- catalog: update\n- catalog: update\n- catalog: add techno-widgets",
+      "releasedAt": "2026-11-12T13:22:23Z"
     },
     {
       "id": "ar-youtube",

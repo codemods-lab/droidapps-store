@@ -45,25 +45,6 @@ apps:
     category: Finance
     platforms: [phone]
 
-  - id: chatlens
-    repo: codemods-lab/chatlens
-    releases: codemods-lab/utildroid-apps
-    packageName: com.innovcrest.chatlens
-    name: ChatLens
-    summary: WhatsApp insights, fully on-device
-    category: Tools
-    platforms: [phone]
-
-  - id: techno-widgets
-    repo: codemods-lab/techno-widgets
-    releases: codemods-lab/utildroid-apps
-    packageName: com.innovcrest.technowidgets
-    name: Techno Widgets
-    summary: Glass home-screen widgets with one accent color
-    description: Clock, battery, app dock, weather, next event and steps widgets that restyle together when you change the accent.
-    category: Tools
-    platforms: [phone]
-
   - id: bhoomi-converter
     repo: codemods-lab/bhoomi-converter
     releases: codemods-lab/utildroid-apps
@@ -82,4 +63,23 @@ apps:
     summary: Offline Ludo on a 3D board, with bots and Same Wi-Fi play
     description: Classic Ludo on a tilted 3D board. Play against Easy, Medium or Hard bots, pass the phone, or play with phones on the same Wi-Fi with no internet. House rules, auto-saved games, English and Hindi, no ads.
     category: Games
+    platforms: [phone]
+
+  - id: techno-widgets
+    repo: codemods-lab/techno-widgets
+    releases: codemods-lab/utildroid-apps
+    packageName: com.innovcrest.technowidgets
+    name: Techno Widgets
+    summary: Glass home-screen widgets with one accent color
+    description: Clock, battery, app dock, weather, next event and steps widgets that restyle together when you change the accent.
+    category: Tools
+    platforms: [phone]
+
+  - id: chatlens
+    repo: codemods-lab/chatlens
+    releases: codemods-lab/utildroid-apps
+    packageName: com.innovcrest.chatlens
+    name: ChatLens
+    summary: WhatsApp insights, fully on-device
+    category: Tools
     platforms: [phone]

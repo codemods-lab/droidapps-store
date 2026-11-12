@@ -50,22 +50,6 @@ object ApkVerifier {
         }
     }
 
-    /** SHA-256 of this app's own signing cert, shown in Settings for copying into apps.yaml. */
-    fun ownCertFingerprint(context: Context): String = runCatching {
-        val pm = context.packageManager
-        val info = if (Build.VERSION.SDK_INT >= 28) {
-            if (Build.VERSION.SDK_INT >= 33) {
-                pm.getPackageInfo(context.packageName, PackageManager.PackageInfoFlags.of(PackageManager.GET_SIGNING_CERTIFICATES.toLong()))
-            } else {
-                pm.getPackageInfo(context.packageName, PackageManager.GET_SIGNING_CERTIFICATES)
-            }
-        } else {
-            @Suppress("DEPRECATION")
-            pm.getPackageInfo(context.packageName, PackageManager.GET_SIGNATURES)
-        }
-        signatures(info).firstOrNull()?.let { fingerprint(it) } ?: ""
-    }.getOrDefault("")
-
     private fun archiveInfo(context: Context, file: File): PackageInfo? {
         val pm = context.packageManager
         return when {

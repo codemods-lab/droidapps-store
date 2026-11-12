@@ -9,7 +9,7 @@ import com.innovcrest.utildroid.data.CatalogApp
 import com.innovcrest.utildroid.data.CatalogState
 import com.innovcrest.utildroid.data.InstalledInfo
 import com.innovcrest.utildroid.data.Settings
-import com.innovcrest.utildroid.installer.ApkVerifier
+import com.innovcrest.utildroid.data.ThemeMode
 import com.innovcrest.utildroid.installer.InstallPhase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -62,7 +62,6 @@ class StoreViewModel(application: Application) : AndroidViewModel(application) {
     private val canInstall = MutableStateFlow(c.installManager.canInstallPackages())
 
     val ownVersion: String = BuildConfig.VERSION_NAME
-    val ownCertFingerprint: String = ApkVerifier.ownCertFingerprint(application)
 
     val ui: StateFlow<StoreUi> = combine(
         c.catalogRepository.state,
@@ -150,15 +149,9 @@ class StoreViewModel(application: Application) : AndroidViewModel(application) {
     }
     fun uninstall(item: AppUi) = c.installManager.uninstall(item.app.packageName)
 
-    fun setCatalogUrl(url: String) {
-        viewModelScope.launch {
-            c.settings.setCatalogUrl(url)
-            c.catalogRepository.refresh()
-        }
-    }
-
     fun setCheckInterval(hours: Int) = viewModelScope.launch { c.settings.setCheckInterval(hours) }
     fun setWifiOnly(value: Boolean) = viewModelScope.launch { c.settings.setWifiOnly(value) }
     fun setSilentUpdates(value: Boolean) = viewModelScope.launch { c.settings.setSilentUpdates(value) }
     fun setNotify(value: Boolean) = viewModelScope.launch { c.settings.setNotify(value) }
+    fun setThemeMode(mode: ThemeMode) = viewModelScope.launch { c.settings.setThemeMode(mode) }
 }

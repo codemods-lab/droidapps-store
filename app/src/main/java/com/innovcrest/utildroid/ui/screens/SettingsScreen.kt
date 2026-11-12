@@ -2,9 +2,9 @@ package com.innovcrest.utildroid.ui.screens
 
 import android.os.Build
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -16,47 +16,35 @@ import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowRight
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.innovcrest.utildroid.data.ThemeMode
 import com.innovcrest.utildroid.ui.AppStatus
 import com.innovcrest.utildroid.ui.AppUi
 import com.innovcrest.utildroid.ui.StoreViewModel
 import com.innovcrest.utildroid.ui.common.GroupGap
 import com.innovcrest.utildroid.ui.common.PillButton
-import com.innovcrest.utildroid.ui.common.PillStyle
 import com.innovcrest.utildroid.ui.common.ScreenTitle
 import com.innovcrest.utildroid.ui.common.SectionHeader
 import com.innovcrest.utildroid.ui.common.StoreGlyph
@@ -65,6 +53,7 @@ import com.innovcrest.utildroid.ui.common.openInstallPermissionSettings
 import com.innovcrest.utildroid.ui.common.relativeTime
 
 private val intervals = listOf(6 to "6 h", 12 to "12 h", 24 to "24 h", 0 to "Off")
+private val themes = listOf(ThemeMode.Light to "Light", ThemeMode.Dark to "Dark", ThemeMode.System to "System")
 
 @Composable
 fun SettingsScreen(vm: StoreViewModel) {
@@ -89,7 +78,7 @@ fun SettingsScreen(vm: StoreViewModel) {
                     modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 18.dp, bottom = 16.dp),
                 ) {
                     RowText("Check for updates", "Last checked ${relativeTime(ui.lastRefreshedMillis)}")
-                    IntervalPicker(selectedHours = settings.checkIntervalHours, onSelect = { vm.setCheckInterval(it) })
+                    SegmentedPicker(intervals, selected = settings.checkIntervalHours, onSelect = { vm.setCheckInterval(it) })
                 }
             }
             SwitchRow(
@@ -115,6 +104,17 @@ fun SettingsScreen(vm: StoreViewModel) {
             )
         }
 
+        SectionHeader("Appearance", Modifier.padding(top = 24.dp, bottom = 12.dp))
+        Surface(shape = groupedShape(0, 1), color = colors.surface, modifier = Modifier.fillMaxWidth()) {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(14.dp),
+                modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 18.dp, bottom = 16.dp),
+            ) {
+                RowText("Theme", "System follows your phone's dark mode setting")
+                SegmentedPicker(themes, selected = settings.themeMode, onSelect = { vm.setThemeMode(it) })
+            }
+        }
+
         if (!ui.canInstall) {
             SectionHeader("Permissions", Modifier.padding(top = 24.dp, bottom = 12.dp))
             Surface(shape = groupedShape(0, 1), color = colors.surface, modifier = Modifier.fillMaxWidth()) {
@@ -129,12 +129,8 @@ fun SettingsScreen(vm: StoreViewModel) {
             }
         }
 
-        SectionHeader("Catalog", Modifier.padding(top = 24.dp, bottom = 12.dp))
-        CatalogUrlCard(saved = settings.catalogUrl, onSave = { vm.setCatalogUrl(it) })
-
         SectionHeader("About", Modifier.padding(top = 24.dp, bottom = 12.dp))
-        val hasKey = vm.ownCertFingerprint.isNotBlank()
-        val aboutRows = if (hasKey) 3 else 2
+        val aboutRows = 2
         Column(verticalArrangement = Arrangement.spacedBy(GroupGap)) {
             Surface(shape = groupedShape(0, aboutRows), color = colors.surface, modifier = Modifier.fillMaxWidth()) {
                 Row(
@@ -166,16 +162,6 @@ fun SettingsScreen(vm: StoreViewModel) {
                     )
                 }
             }
-            if (hasKey) {
-                Surface(shape = groupedShape(2, aboutRows), color = colors.surface, modifier = Modifier.fillMaxWidth()) {
-                    Column(verticalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.padding(16.dp)) {
-                        RowText("Signing key", "SHA-256, for apps.yaml")
-                        SelectionContainer {
-                            Text(vm.ownCertFingerprint, fontSize = 12.sp, lineHeight = 18.sp, fontFamily = FontFamily.Monospace)
-                        }
-                    }
-                }
-            }
         }
     }
 }
@@ -200,27 +186,27 @@ private fun RowText(title: String, subtitle: String, modifier: Modifier = Modifi
 
 /** Connected button group: the selected option goes fully round, the rest keep tight inner corners. */
 @Composable
-private fun IntervalPicker(selectedHours: Int, onSelect: (Int) -> Unit) {
+private fun <T> SegmentedPicker(options: List<Pair<T, String>>, selected: T, onSelect: (T) -> Unit) {
     val colors = MaterialTheme.colorScheme
     Row(horizontalArrangement = Arrangement.spacedBy(2.dp), modifier = Modifier.fillMaxWidth().selectableGroup()) {
-        intervals.forEachIndexed { index, (hours, label) ->
-            val selected = selectedHours == hours
+        options.forEachIndexed { index, (value, label) ->
+            val isSelected = selected == value
             val shape: Shape = when {
-                selected -> CircleShape
+                isSelected -> CircleShape
                 index == 0 -> RoundedCornerShape(topStart = 24.dp, topEnd = 8.dp, bottomEnd = 8.dp, bottomStart = 24.dp)
-                index == intervals.lastIndex -> RoundedCornerShape(topStart = 8.dp, topEnd = 24.dp, bottomEnd = 24.dp, bottomStart = 8.dp)
+                index == options.lastIndex -> RoundedCornerShape(topStart = 8.dp, topEnd = 24.dp, bottomEnd = 24.dp, bottomStart = 8.dp)
                 else -> RoundedCornerShape(8.dp)
             }
             Surface(
-                selected = selected,
-                onClick = { onSelect(hours) },
+                selected = isSelected,
+                onClick = { onSelect(value) },
                 shape = shape,
-                color = if (selected) colors.primary else colors.surfaceContainerHigh,
-                contentColor = if (selected) colors.onPrimary else colors.onSurface,
+                color = if (isSelected) colors.primary else colors.surfaceContainerHigh,
+                contentColor = if (isSelected) colors.onPrimary else colors.onSurface,
                 modifier = Modifier.weight(1f).height(48.dp).semantics { role = Role.RadioButton },
             ) {
                 Box(contentAlignment = Alignment.Center) {
-                    Text(label, fontSize = 15.sp, fontWeight = if (selected) FontWeight.Bold else FontWeight.SemiBold)
+                    Text(label, fontSize = 15.sp, fontWeight = if (isSelected) FontWeight.Bold else FontWeight.SemiBold)
                 }
             }
         }
@@ -255,36 +241,6 @@ private fun SwitchRow(title: String, subtitle: String, checked: Boolean, onChang
                     uncheckedBorderColor = colors.outline,
                 ),
             )
-        }
-    }
-}
-
-@Composable
-private fun CatalogUrlCard(saved: String, onSave: (String) -> Unit) {
-    val focus = LocalFocusManager.current
-    var url by rememberSaveable(saved) { mutableStateOf(saved) }
-    val changed = url.trim() != saved
-    val save = {
-        onSave(url)
-        focus.clearFocus()
-    }
-    Surface(shape = groupedShape(0, 1), color = MaterialTheme.colorScheme.surface, modifier = Modifier.fillMaxWidth()) {
-        Column(verticalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.padding(16.dp)) {
-            RowText("Catalog URL", "Where the store reads its app list. Clear it to go back to the default.")
-            OutlinedTextField(
-                value = url,
-                onValueChange = { url = it },
-                singleLine = true,
-                textStyle = MaterialTheme.typography.bodyMedium,
-                shape = RoundedCornerShape(12.dp),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri, imeAction = ImeAction.Done),
-                keyboardActions = KeyboardActions(onDone = { save() }),
-                trailingIcon = if (changed) {
-                    { IconButton(onClick = save) { Icon(Icons.Rounded.Check, contentDescription = "Save catalog URL") } }
-                } else null,
-                modifier = Modifier.fillMaxWidth(),
-            )
-            if (changed) PillButton("Save and refresh", onClick = save, style = PillStyle.Tonal)
         }
     }
 }

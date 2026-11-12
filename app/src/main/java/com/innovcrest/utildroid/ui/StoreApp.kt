@@ -1,5 +1,6 @@
 package com.innovcrest.utildroid.ui
 
+import android.net.Uri
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FileDownload
@@ -26,21 +27,38 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.innovcrest.utildroid.ui.screens.AllAppsScreen
 import com.innovcrest.utildroid.ui.screens.BrowseScreen
 import com.innovcrest.utildroid.ui.screens.DetailScreen
 import com.innovcrest.utildroid.ui.screens.SettingsScreen
 import com.innovcrest.utildroid.ui.screens.UpdatesScreen
 
+/** Navigation routes. Tabs show the bottom bar; the rest are pushed on top. */
+private object Routes {
+    const val BROWSE = "browse"
+    const val UPDATES = "updates"
+    const val SETTINGS = "settings"
+    const val ALL_APPS = "apps?category={category}"
+    const val DETAIL = "detail/{id}"
+    const val ARG_CATEGORY = "category"
+    const val ARG_ID = "id"
+
+    fun allApps(category: String?) = if (category == null) "apps" else "apps?category=${Uri.encode(category)}"
+    fun detail(appId: String) = "detail/$appId"
+}
+
 private data class Tab(val route: String, val label: String, val icon: ImageVector, val selectedIcon: ImageVector)
 
 private val tabs = listOf(
-    Tab("browse", "Browse", Icons.Outlined.GridView, Icons.Filled.GridView),
-    Tab("updates", "Updates", Icons.Outlined.FileDownload, Icons.Filled.FileDownload),
-    Tab("settings", "Settings", Icons.Outlined.Tune, Icons.Filled.Tune),
+    Tab(Routes.BROWSE, "Browse", Icons.Outlined.GridView, Icons.Filled.GridView),
+    Tab(Routes.UPDATES, "Updates", Icons.Outlined.FileDownload, Icons.Filled.FileDownload),
+    Tab(Routes.SETTINGS, "Settings", Icons.Outlined.Tune, Icons.Filled.Tune),
 )
 
 @Composable
@@ -53,7 +71,7 @@ fun StoreApp(vm: StoreViewModel, openUpdates: Boolean, onUpdatesOpened: () -> Un
 
     LaunchedEffect(openUpdates) {
         if (openUpdates) {
-            nav.goToTab("updates")
+            nav.goToTab(Routes.UPDATES)
             onUpdatesOpened()
         }
     }
@@ -71,7 +89,7 @@ fun StoreApp(vm: StoreViewModel, openUpdates: Boolean, onUpdatesOpened: () -> Un
                             label = { Text(tab.label, fontWeight = if (selected) FontWeight.Bold else FontWeight.Medium) },
                             icon = {
                                 val image = if (selected) tab.selectedIcon else tab.icon
-                                if (tab.route == "updates" && ui.pendingUpdateCount > 0) {
+                                if (tab.route == Routes.UPDATES && ui.pendingUpdateCount > 0) {
                                     BadgedBox(badge = {
                                         Badge(containerColor = colors.error, contentColor = colors.onError) {
                                             Text(ui.pendingUpdateCount.toString(), fontWeight = FontWeight.Bold)
@@ -94,16 +112,32 @@ fun StoreApp(vm: StoreViewModel, openUpdates: Boolean, onUpdatesOpened: () -> Un
             }
         },
     ) { padding ->
-        NavHost(nav, startDestination = "browse", modifier = Modifier.padding(padding)) {
-            composable("browse") {
-                BrowseScreen(vm, onOpen = { nav.navigate("detail/${it.app.id}") })
+        NavHost(nav, startDestination = Routes.BROWSE, modifier = Modifier.padding(padding)) {
+            composable(Routes.BROWSE) {
+                BrowseScreen(
+                    vm,
+                    onDetails = { nav.navigate(Routes.detail(it.app.id)) },
+                    onSeeAll = { category -> nav.navigate(Routes.allApps(category)) },
+                    onOpenUpdates = { nav.goToTab(Routes.UPDATES) },
+                )
             }
-            composable("updates") {
-                UpdatesScreen(vm, onOpen = { nav.navigate("detail/${it.app.id}") })
+            composable(
+                Routes.ALL_APPS,
+                arguments = listOf(navArgument(Routes.ARG_CATEGORY) { type = NavType.StringType; nullable = true }),
+            ) { entry ->
+                AllAppsScreen(
+                    vm,
+                    initialCategory = entry.arguments?.getString(Routes.ARG_CATEGORY),
+                    onBack = { nav.popBackStack() },
+                    onDetails = { nav.navigate(Routes.detail(it.app.id)) },
+                )
             }
-            composable("settings") { SettingsScreen(vm) }
-            composable("detail/{id}") { entry ->
-                DetailScreen(vm, entry.arguments?.getString("id").orEmpty(), onBack = { nav.popBackStack() })
+            composable(Routes.UPDATES) {
+                UpdatesScreen(vm, onOpen = { nav.navigate(Routes.detail(it.app.id)) })
+            }
+            composable(Routes.SETTINGS) { SettingsScreen(vm) }
+            composable(Routes.DETAIL) { entry ->
+                DetailScreen(vm, entry.arguments?.getString(Routes.ARG_ID).orEmpty(), onBack = { nav.popBackStack() })
             }
         }
     }

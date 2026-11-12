@@ -67,7 +67,7 @@ class CatalogRepository(
                             resp.header("ETag")?.let { etagFile.writeText(it) } ?: etagFile.delete()
                             parsed
                         }
-                        resp.code == 404 -> throw IOException("Catalog not found. Check the catalog URL in Settings.")
+                        resp.code == 404 -> throw IOException("Catalog not found. Try again later.")
                         else -> throw IOException("Catalog request failed (HTTP ${resp.code})")
                     }
                 }

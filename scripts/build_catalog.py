@@ -7,7 +7,7 @@ An app whose release can't be read keeps its previous catalog entry.
 
 Env:
   GITHUB_TOKEN       optional, raises the GitHub API rate limit
-  GITHUB_REPOSITORY  owner/repo of utildroid-store (set automatically in Actions)
+  GITHUB_REPOSITORY  owner/repo of droidapps-store (set automatically in Actions)
   CATALOG_BRANCH     branch serving icons/screenshots (default: main)
   ANDROID_HOME       used to find aapt2 (preinstalled on GitHub's ubuntu runners)
 """
@@ -32,7 +32,7 @@ APPS_YAML = os.path.join(CATALOG_DIR, "apps.yaml")
 CATALOG_JSON = os.path.join(CATALOG_DIR, "catalog.json")
 
 TOKEN = os.environ.get("GITHUB_TOKEN", "")
-STORE_REPO = os.environ.get("GITHUB_REPOSITORY", "codemods-lab/utildroid-store")
+STORE_REPO = os.environ.get("GITHUB_REPOSITORY", "codemods-lab/droidapps-store")
 BRANCH = os.environ.get("CATALOG_BRANCH", "main")
 IMAGE_EXT = (".png", ".jpg", ".jpeg", ".webp")
 
@@ -218,7 +218,7 @@ def main():
         "schemaVersion": 1,
         "generatedAt": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "store": {
-            "name": store.get("name", "UtilDroid Store"),
+            "name": store.get("name", "DroidApps Store"),
             "signingCertSha256": store.get("signingCertSha256", "") or "",
         },
         "apps": apps,

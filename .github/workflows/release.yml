@@ -1,5 +1,5 @@
 # Builds a signed release APK when you push a tag like v1.2.3, attaches it to a
-# GitHub Release, then pings utildroid-store so the catalog picks it up.
+# GitHub Release, then pings droidapps-store so the catalog picks it up.
 #
 # The same file works in every app repo (copy it from templates/release.yml).
 # Repo secrets needed: KEYSTORE_BASE64, KEYSTORE_PASSWORD, KEY_ALIAS, KEY_PASSWORD,
@@ -14,7 +14,7 @@ permissions:
   contents: write
 
 env:
-  STORE_REPO: ${{ vars.STORE_REPO || 'codemods-lab/utildroid-store' }}
+  STORE_REPO: ${{ vars.STORE_REPO || 'codemods-lab/droidapps-store' }}
   STORE_TOKEN: ${{ secrets.STORE_DISPATCH_TOKEN }}
 
 jobs:
@@ -68,7 +68,7 @@ jobs:
           files: "*.apk"
           body_path: notes.md
 
-      - name: Tell UtilDroid Store to rebuild its catalog
+      - name: Tell DroidApps Store to rebuild its catalog
         if: env.STORE_TOKEN != ''
         run: |
           curl -fsS -X POST \

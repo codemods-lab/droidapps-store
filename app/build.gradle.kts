@@ -26,7 +26,7 @@ android {
         buildConfigField(
             "String",
             "DEFAULT_CATALOG_URL",
-            "\"https://raw.githubusercontent.com/$githubOwner/utildroid-store/main/catalog/catalog.json\""
+            "\"https://raw.githubusercontent.com/$githubOwner/droidapps-store/main/catalog/catalog.json\""
         )
     }
 

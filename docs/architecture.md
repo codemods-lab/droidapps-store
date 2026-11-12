@@ -3,7 +3,7 @@
 ## Release pipeline
 
 ```
-app repo (private)                         utildroid-apps (public)          utildroid-store (public)
+app repo (private)                         droid-apps (public)          droidapps-store (public)
 ──────────────────                         ───────────────────────          ────────────────────────
 git tag v1.2.3 ─▶ .github/workflows/release.yml
                   1. version from tag (1.2.3 → code 10203)
@@ -15,8 +15,8 @@ git tag v1.2.3 ─▶ .github/workflows/release.yml
                      (event app-released, UTILDROID_TOKEN)                  build_catalog.py
                                                                             commits catalog/catalog.json
                                                                                      │
-phone: UtilDroid Store ◀── raw.githubusercontent.com/.../main/catalog/catalog.json ──┘
-       downloads APK from the utildroid-apps Release, verifies, installs
+phone: DroidApps Store ◀── raw.githubusercontent.com/.../main/catalog/catalog.json ──┘
+       downloads APK from the droid-apps Release, verifies, installs
 ```
 
 The store releases itself the same way, except its release lives in its own (public) repo and its workflow is `.github/workflows/release.yml` in this repo.
@@ -55,6 +55,6 @@ Kotlin, Jetpack Compose, phone only. Min SDK 26, target 35. A manual DI containe
 ## Trust model
 
 - **One signing key** (`~/keys/release.jks`, alias `utildroid`, RSA 4096, valid ~100 years) signs every app. Android refuses an update signed with a different key, so this key is the root of trust. Back it up.
-- The store checks every download against both the catalog's SHA-256 and the cert fingerprint. If someone uploads a forged APK to `utildroid-apps`, the store rejects it.
-- `UTILDROID_TOKEN` can only write `utildroid-apps` and `utildroid-store` contents. If it leaks, the worst case is a forged release, which the cert check still blocks.
+- The store checks every download against both the catalog's SHA-256 and the cert fingerprint. If someone uploads a forged APK to `droid-apps`, the store rejects it.
+- `UTILDROID_TOKEN` can only write `droid-apps` and `droidapps-store` contents. If it leaks, the worst case is a forged release, which the cert check still blocks.
 - Release builds are **never** debug-signed. Without `KEYSTORE_FILE` the Gradle release build fails with `SigningConfig "release" is missing required property "storeFile"`.

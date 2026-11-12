@@ -1,6 +1,6 @@
-# UtilDroid Store docs
+# DroidApps Store docs
 
-This is the wiki for the UtilDroid ecosystem. It lives in the repo (not a GitHub wiki) so it's versioned with the code and works the same way in the private app repos. Update these pages in the same commit as the change they describe.
+This is the wiki for the DroidApps ecosystem. It lives in the repo (not a GitHub wiki) so it's versioned with the code and works the same way in the private app repos. Update these pages in the same commit as the change they describe.
 
 | Page | What's in it |
 | --- | --- |
@@ -13,8 +13,8 @@ This is the wiki for the UtilDroid ecosystem. It lives in the repo (not a GitHub
 
 | Repo | Visibility | What it is | Docs |
 | --- | --- | --- | --- |
-| `codemods-lab/utildroid-store` | public | Store app + catalog + CI templates | this folder |
-| `codemods-lab/utildroid-apps` | public | Signed APKs only (GitHub Releases, tags `<id>-vX.Y.Z`) | its README |
+| `codemods-lab/droidapps-store` | public | Store app + catalog + CI templates | this folder |
+| `codemods-lab/droid-apps` | public | Signed APKs only (GitHub Releases, tags `<id>-vX.Y.Z`) | its README |
 | `codemods-lab/ar-youtube` | private | Ad-free YouTube for phone + TV | `docs/` in that repo |
 | `codemods-lab/spendlens` | private | Spend tracker from bank SMS | `docs/` in that repo |
 | `codemods-lab/chatlens` | private | WhatsApp chat insights | `docs/` in that repo |
@@ -25,7 +25,7 @@ Local clones live side by side in `~/dev/codemods/`.
 
 | App | Package | Latest release |
 | --- | --- | --- |
-| UtilDroid Store | `com.innovcrest.utildroid` | `v1.0.0` |
+| DroidApps Store | `com.innovcrest.utildroid` | `v1.0.0` |
 | AR YouTube | `com.innovcrest.aryoutube` | `ar-youtube-v1.0.1` |
 | SpendLens | `com.innovcrest.spendlens` | `spendlens-v1.0.1` |
 | ChatLens | `com.innovcrest.chatlens` | `chatlens-v1.0.1` |

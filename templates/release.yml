@@ -1,12 +1,12 @@
 # Builds a signed release APK when you push a tag like v1.2.3, publishes it to the public
-# APK repo (codemods-lab/utildroid-apps) as release "<app-id>-v1.2.3", then pings
-# utildroid-store so the catalog picks it up. The app's own repo can stay private.
+# APK repo (codemods-lab/droid-apps) as release "<app-id>-v1.2.3", then pings
+# droidapps-store so the catalog picks it up. The app's own repo can stay private.
 #
 # Copy to .github/workflows/release.yml in each app repo.
 # Repo secrets needed: KEYSTORE_BASE64, KEYSTORE_PASSWORD, KEY_ALIAS, KEY_PASSWORD, UTILDROID_TOKEN
 #   UTILDROID_TOKEN: fine-grained token with Contents: read and write on
-#   codemods-lab/utildroid-apps and codemods-lab/utildroid-store.
-# APP_ID must match the app's `id` in utildroid-store/catalog/apps.yaml (defaults to the repo name).
+#   codemods-lab/droid-apps and codemods-lab/droidapps-store.
+# APP_ID must match the app's `id` in droidapps-store/catalog/apps.yaml (defaults to the repo name).
 name: Release APK
 
 on:
@@ -18,8 +18,8 @@ permissions:
 
 env:
   APP_ID: ${{ vars.APP_ID || github.event.repository.name }}
-  RELEASES_REPO: codemods-lab/utildroid-apps
-  STORE_REPO: codemods-lab/utildroid-store
+  RELEASES_REPO: codemods-lab/droid-apps
+  STORE_REPO: codemods-lab/droidapps-store
 
 jobs:
   release:
@@ -77,7 +77,7 @@ jobs:
           files: "*.apk"
           body_path: notes.md
 
-      - name: Tell UtilDroid Store to rebuild its catalog
+      - name: Tell DroidApps Store to rebuild its catalog
         env:
           GH_TOKEN: ${{ secrets.UTILDROID_TOKEN }}
         run: |

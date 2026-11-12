@@ -1,26 +1,26 @@
-# UtilDroid Store
+# DroidApps Store
 
-A personal Android app store for my own sideloaded apps. Free to run: app source lives in private GitHub repos, signed APKs are published to the public `codemods-lab/utildroid-apps` repo's Releases, and GitHub Actions does the builds.
+A personal Android app store for my own sideloaded apps. Free to run: app source lives in private GitHub repos, signed APKs are published to the public `codemods-lab/droid-apps` repo's Releases, and GitHub Actions does the builds.
 
 ```
-app repo (private) ──tag v1.2.0──▶ release.yml ──signed APK──▶ utildroid-apps Release "<id>-v1.2.0" (public)
+app repo (private) ──tag v1.2.0──▶ release.yml ──signed APK──▶ droid-apps Release "<id>-v1.2.0" (public)
                                │
-                               └─ dispatch ──▶ utildroid-store: catalog.yml ──▶ catalog/catalog.json
+                               └─ dispatch ──▶ droidapps-store: catalog.yml ──▶ catalog/catalog.json
                                                                                      │
-                                                         UtilDroid Store app ◀───────┘
+                                                         DroidApps Store app ◀───────┘
                                                          (downloads the APK from the Release,
                                                           checks SHA-256 + signing cert, installs)
 ```
 
 ## Why it exists
 
-These are personal apps that can't or shouldn't go on the Play Store: SpendLens reads SMS, ChatLens reads WhatsApp notifications, and AR YouTube bypasses YouTube's player. Sideloading APKs by hand meant no updates, no version tracking and mismatched debug keys. UtilDroid Store fixes that at zero cost: one signing key, CI-built releases, and an app on the phone that lists, installs and auto-updates everything.
+These are personal apps that can't or shouldn't go on the Play Store: SpendLens reads SMS, ChatLens reads WhatsApp notifications, and AR YouTube bypasses YouTube's player. Sideloading APKs by hand meant no updates, no version tracking and mismatched debug keys. DroidApps Store fixes that at zero cost: one signing key, CI-built releases, and an app on the phone that lists, installs and auto-updates everything.
 
 ## Status (Nov 2026)
 
 | App | Repo | Package | Notes |
 | --- | --- | --- | --- |
-| UtilDroid Store | `utildroid-store` (public) | `com.innovcrest.utildroid` | v1.0.0 released; updates itself |
+| DroidApps Store | `droidapps-store` (public) | `com.innovcrest.utildroid` | v1.0.0 released; updates itself |
 | AR YouTube | `ar-youtube` (private) | `com.innovcrest.aryoutube` | phone + TV; TV copy is installed by hand |
 | SpendLens | `spendlens` (private) | `com.innovcrest.spendlens` | bank SMS spend tracker |
 | ChatLens | `chatlens` (private) | `com.innovcrest.chatlens` | WhatsApp insights |
@@ -39,12 +39,12 @@ Each app's own README has a "Known gaps and ideas" section. Store-level ideas: a
 | `.github/workflows/release.yml` | Tag → signed APK → GitHub Release → ping the catalog |
 | `.github/workflows/catalog.yml` | Rebuilds the catalog on push, on ping, and every 6 hours |
 | `templates/` | `release.yml` and a Gradle signing snippet to copy into other (private) app repos |
-| `web/` | The landing page: one static `index.html`, no build step. Live at https://codemods-lab.github.io/utildroid-store/ |
+| `web/` | The landing page: one static `index.html`, no build step. Live at https://codemods-lab.github.io/droidapps-store/ |
 | `.github/workflows/pages.yml` | Deploys `web/` to GitHub Pages on pushes to `main` that touch it |
 
 ## One-time setup
 
-1. **Create the repo.** Make a public GitHub repo `codemods-lab/utildroid-store` and push this project to `main`. If the owner isn't `codemods-lab`, change `utildroid.githubOwner` in `gradle.properties` and the `repo:` lines in `catalog/apps.yaml`.
+1. **Create the repo.** Make a public GitHub repo `codemods-lab/droidapps-store` and push this project to `main`. If the owner isn't `codemods-lab`, change `utildroid.githubOwner` in `gradle.properties` and the `repo:` lines in `catalog/apps.yaml`.
 
 2. **Create one signing key for all apps.** Keep two offline backups. If this file is lost, no app can ever be updated in place again.
    ```bash
@@ -65,9 +65,9 @@ Each app's own README has a "Known gaps and ideas" section. Store-level ideas: a
    | `KEYSTORE_PASSWORD` | keystore password |
    | `KEY_ALIAS` | `utildroid` |
    | `KEY_PASSWORD` | key password |
-   | `UTILDROID_TOKEN` | fine-grained token with **Contents: read and write** on `utildroid-apps` and `utildroid-store` only. Publishes the APK and pings the catalog |
+   | `UTILDROID_TOKEN` | fine-grained token with **Contents: read and write** on `droid-apps` and `droidapps-store` only. Publishes the APK and pings the catalog |
 
-5. **Release the store itself:** `git tag v1.0.0 && git push origin v1.0.0`. Download the APK from the Release page on your phone, install it once, and allow "Install unknown apps" for UtilDroid when asked. From then on it updates itself.
+5. **Release the store itself:** `git tag v1.0.0 && git push origin v1.0.0`. Download the APK from the Release page on your phone, install it once, and allow "Install unknown apps" for DroidApps when asked. From then on it updates itself.
 
 ## Adding an app
 
@@ -76,8 +76,8 @@ Each app's own README has a "Known gaps and ideas" section. Store-level ideas: a
    - merge `templates/signing.gradle.kts` into its `app/build.gradle.kts`
    - add the five secrets
    - set its `applicationId` under `com.innovcrest.*`
-2. Here, add an entry to `catalog/apps.yaml` with `releases: codemods-lab/utildroid-apps` (and optionally `catalog/apps/<id>/icon.png`) and push.
-3. Push a tag in the app repo, e.g. `v1.0.0`. The workflow builds, signs and publishes the APK to `utildroid-apps`, then pings the catalog.
+2. Here, add an entry to `catalog/apps.yaml` with `releases: codemods-lab/droid-apps` (and optionally `catalog/apps/<id>/icon.png`) and push.
+3. Push a tag in the app repo, e.g. `v1.0.0`. The workflow builds, signs and publishes the APK to `droid-apps`, then pings the catalog.
 4. Pull to refresh in the store. The app shows up with an **Install** button.
 
 ## Releasing an update

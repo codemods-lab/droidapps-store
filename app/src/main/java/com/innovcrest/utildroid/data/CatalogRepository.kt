@@ -61,7 +61,7 @@ class CatalogRepository(
                             val body = resp.body?.string() ?: throw IOException("Empty catalog")
                             val parsed = json.decodeFromString<Catalog>(body)
                             if (parsed.schemaVersion > SUPPORTED_SCHEMA_VERSION) {
-                                throw IOException("Catalog format v${parsed.schemaVersion} needs a newer UtilDroid Store")
+                                throw IOException("Catalog format v${parsed.schemaVersion} needs a newer DroidApps Store")
                             }
                             cacheFile.writeText(body)
                             resp.header("ETag")?.let { etagFile.writeText(it) } ?: etagFile.delete()

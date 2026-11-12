@@ -4,7 +4,7 @@ A short log of decisions that shape the system. Add new entries at the top: date
 
 ## 2026-11-10: Private source repos, public APK repo
 
-- **Decision:** App source lives in private repos. CI publishes signed APKs to the public `codemods-lab/utildroid-apps` repo as releases tagged `<id>-vX.Y.Z`. `apps.yaml` gets an optional `releases:` field.
+- **Decision:** App source lives in private repos. CI publishes signed APKs to the public `codemods-lab/droid-apps` repo as releases tagged `<id>-vX.Y.Z`. `apps.yaml` gets an optional `releases:` field.
 - **Why:** The store downloads APKs and `catalog.json` without logging in. Release assets in a private repo need a token, and a token shipped inside an APK can be extracted. APKs can always be decompiled, so making them public reveals little that isn't already exposed.
 - **Cost:** One extra repo and a cross-repo token (`UTILDROID_TOKEN`). Private repos have no GitHub wiki on the free plan, so docs live in `docs/` folders instead.
 
@@ -39,3 +39,10 @@ A short log of decisions that shape the system. Add new entries at the top: date
 - **Decision:** One RSA-4096 key (`utildroid` alias) signs every app. Its fingerprint is pinned in `apps.yaml`.
 - **Why:** Simple. The store only needs to trust one cert.
 - **Cost:** It's a single point of failure. Losing it means every app needs a new package name. Keep it backed up.
+
+## 2026-11-12: Renamed from UtilDroid to DroidApps Store
+
+- **Decision:** The store is called DroidApps Store (launcher label "DroidApps"). Repos were renamed: `utildroid-store` → `droidapps-store`, `utildroid-apps` → `droid-apps`.
+- **Kept on purpose:** package `com.innovcrest.utildroid` (changing it would make Android treat the store as a new app and break in-place and silent updates), the `utildroid` key alias, the `UTILDROID_TOKEN` secret name, and internal code names.
+- **What still works:** GitHub redirects the old repo URLs, including the raw catalog URL baked into store versions up to 1.1.0 and old APK download links. Don't create new repos with the old names, or those redirects stop.
+- **What broke:** the old website address `codemods-lab.github.io/utildroid-store/` returns 404. The site is now at `codemods-lab.github.io/droidapps-store/`.

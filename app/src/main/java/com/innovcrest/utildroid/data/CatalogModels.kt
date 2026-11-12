@@ -15,7 +15,7 @@ data class Catalog(
 
 @Serializable
 data class StoreInfo(
-    val name: String = "UtilDroid Store",
+    val name: String = "DroidApps Store",
     /** SHA-256 of the release signing certificate, "AB:CD:..." form. Blank skips the check. */
     val signingCertSha256: String = "",
 )

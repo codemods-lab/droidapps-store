@@ -8,8 +8,8 @@ git tag v1.2.0 && git push origin v1.2.0
 ```
 
 1. Watch it: `gh run list -R codemods-lab/<app> --limit 3`. Builds take 4–8 minutes.
-2. Check it landed: `gh release list -R codemods-lab/utildroid-apps`
-3. The catalog rebuilds within about a minute of the release (`gh run list -R codemods-lab/utildroid-store --limit 3`).
+2. Check it landed: `gh release list -R codemods-lab/droid-apps`
+3. The catalog rebuilds within about a minute of the release (`gh run list -R codemods-lab/droidapps-store --limit 3`).
 4. On the phone, pull to refresh in the store, or wait for the background check (every 12 h by default).
 
 Rules:
@@ -17,7 +17,7 @@ Rules:
 - **Never reuse or move a tag** after a successful release: the catalog keys on the APK URL, and phones that already installed it won't see a "new" build. If a release fails, fix it and tag the next patch (that's what happened with `v1.0.0` → `v1.0.1`).
 - The "What's new" text is the commit subjects since the previous tag, so write readable commit messages.
 
-To release the **store itself**, do the same in `utildroid-store`. Its APK goes to its own Releases page.
+To release the **store itself**, do the same in `droidapps-store`. Its APK goes to its own Releases page.
 
 ## Add a new app
 
@@ -28,7 +28,7 @@ To release the **store itself**, do the same in `utildroid-store`. Its APK goes 
    - copy `templates/release.yml` to `.github/workflows/release.yml`;
    - keep personal data out of `app/src/main`, because the APK is public.
 3. Add the 5 secrets (see below).
-4. Add an entry to `catalog/apps.yaml` with `releases: codemods-lab/utildroid-apps`. Optionally add `catalog/apps/<id>/icon.png`. Push.
+4. Add an entry to `catalog/apps.yaml` with `releases: codemods-lab/droid-apps`. Optionally add `catalog/apps/<id>/icon.png`. Push.
 5. Tag `v1.0.0` in the app repo.
 
 ## Secrets
@@ -41,7 +41,7 @@ Each app repo needs these 5 secrets. The store repo needs the first 4.
 | `KEYSTORE_PASSWORD` | keystore password (in your password manager) |
 | `KEY_ALIAS` | `utildroid` |
 | `KEY_PASSWORD` | same as the keystore password (PKCS12 keystores use one password) |
-| `UTILDROID_TOKEN` | fine-grained PAT named `utildroid`, owner `codemods-lab`, repos `utildroid-apps` + `utildroid-store`, **Contents: Read and write** |
+| `UTILDROID_TOKEN` | fine-grained PAT named `utildroid`, owner `codemods-lab`, repos `droid-apps` + `droidapps-store`, **Contents: Read and write** |
 
 ```bash
 R=codemods-lab/<app>

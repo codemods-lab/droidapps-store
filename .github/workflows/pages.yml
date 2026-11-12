@@ -1,4 +1,4 @@
-# Publishes web/ to GitHub Pages: https://codemods-lab.github.io/utildroid-store/
+# Publishes web/ to GitHub Pages: https://codemods-lab.github.io/droidapps-store/
 # One-time setup: repo Settings → Pages → Source: "GitHub Actions".
 name: Deploy landing page
 

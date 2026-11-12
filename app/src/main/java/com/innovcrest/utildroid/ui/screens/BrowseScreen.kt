@@ -77,7 +77,7 @@ fun BrowseScreen(vm: StoreViewModel, onOpen: (AppUi) -> Unit) {
                 item {
                     StoreBanner(
                         icon = Icons.Outlined.Shield,
-                        title = "Allow installs from UtilDroid",
+                        title = "Allow installs from DroidApps",
                         subtitle = "Android needs this once before the store can install apps",
                         action = "Allow",
                         onAction = { openInstallPermissionSettings(context) },
@@ -92,7 +92,7 @@ fun BrowseScreen(vm: StoreViewModel, onOpen: (AppUi) -> Unit) {
                     StoreBanner(
                         icon = Icons.Outlined.FileDownload,
                         title = if (busy) "Updating the store" else "Store update ready",
-                        subtitle = "UtilDroid Store ${self.app.versionName}",
+                        subtitle = "DroidApps Store ${self.app.versionName}",
                         action = if (busy) "Updating…" else "Update",
                         onAction = { vm.primaryAction(self) },
                         actionEnabled = !busy,
@@ -126,7 +126,7 @@ fun BrowseScreen(vm: StoreViewModel, onOpen: (AppUi) -> Unit) {
                     )
                 }
                 visible.isEmpty() -> item {
-                    EmptyState("No apps yet", "Add an app to apps.yaml in the utildroid-store repo and push.")
+                    EmptyState("No apps yet", "Add an app to apps.yaml in the droidapps-store repo and push.")
                 }
             }
 
@@ -174,7 +174,7 @@ private fun BrowseHeader(subtitle: String, onRefresh: () -> Unit) {
                 }
             }
         }
-        ScreenTitle("UtilDroid", subtitle = subtitle, modifier = Modifier.padding(top = 8.dp))
+        ScreenTitle("DroidApps", subtitle = subtitle, modifier = Modifier.padding(top = 8.dp))
     }
 }
 

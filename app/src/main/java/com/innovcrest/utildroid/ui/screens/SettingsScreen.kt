@@ -143,7 +143,7 @@ fun SettingsScreen(vm: StoreViewModel) {
                     modifier = Modifier.padding(16.dp),
                 ) {
                     StoreGlyph(40.dp, container = colors.primaryContainer, content = colors.onPrimaryContainer)
-                    RowText("UtilDroid Store", versionLine(vm.ownVersion, ui.self), Modifier.weight(1f))
+                    RowText("DroidApps Store", versionLine(vm.ownVersion, ui.self), Modifier.weight(1f))
                 }
             }
             Surface(

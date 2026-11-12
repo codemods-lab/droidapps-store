@@ -47,5 +47,7 @@ jobs:
             echo "Catalog unchanged"
           else
             git commit -m "catalog: update"
+            # main may have moved while this ran (e.g. two merges back to back); replay on top of it.
+            git pull --rebase
             git push
           fi

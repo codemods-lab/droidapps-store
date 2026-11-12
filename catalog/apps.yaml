@@ -45,16 +45,6 @@ apps:
     category: Finance
     platforms: [phone]
 
-  - id: bhoomi-converter
-    repo: codemods-lab/bhoomi-converter
-    releases: codemods-lab/utildroid-apps
-    packageName: com.innovcrest.bhoomi
-    name: Bhoomi Converter
-    summary: Indian land units by state, with a 3D plot view
-    description: Converts bigha, biswa, kanal, marla, katha, guntha and more into sq ft, gaj, acre and hectare for your state, lets you set your local bigha size, and shows the plot in 3D beside a football field. Works offline in eight languages.
-    category: Tools
-    platforms: [phone]
-
   - id: ludo-3d
     repo: codemods-lab/ludo-3d
     releases: codemods-lab/utildroid-apps
@@ -63,6 +53,16 @@ apps:
     summary: Offline Ludo on a 3D board, with bots and Same Wi-Fi play
     description: Classic Ludo on a tilted 3D board. Play against Easy, Medium or Hard bots, pass the phone, or play with phones on the same Wi-Fi with no internet. House rules, auto-saved games, English and Hindi, no ads.
     category: Games
+    platforms: [phone]
+
+  - id: bhoomi-converter
+    repo: codemods-lab/bhoomi-converter
+    releases: codemods-lab/utildroid-apps
+    packageName: com.innovcrest.bhoomi
+    name: Bhoomi Converter
+    summary: Indian land units by state, with a 3D plot view
+    description: Converts bigha, biswa, kanal, marla, katha, guntha and more into sq ft, gaj, acre and hectare for your state, lets you set your local bigha size, and shows the plot in 3D beside a football field. Works offline in eight languages.
+    category: Tools
     platforms: [phone]
 
   - id: techno-widgets
